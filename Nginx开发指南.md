@@ -533,7 +533,7 @@ ngx_rbtree_delete(&root->rbtree, node);
 ## 哈希
 哈希表函数在 `src/core/ngx_hash.h` 中声明。支持精确匹配和通配符匹配。后者需要额外的设置，在下面的独立章节中进行描述。
 
-在初始化散列表之前，你需要知道它将容纳的元素数量，以便 nginx 能够以最佳方式构建它。需要配置的两个参数是 `max_size` 和 `bucket_size` ，详见[独立文档](https://nginx.org/en/docs/hash.html)。tm通常可由用户配置。哈希初始化设置以 `ngx_hash_init_t` 类型存储，哈希本身为 `ngx_hash_t`：
+在初始化散列表之前，你需要知道它将容纳的元素数量，以便 nginx 能够以最佳方式构建它。需要配置的两个参数是 `max_size` 和 `bucket_size` ，详见[独立文档](https://nginx.org/en/docs/hash.html)。它们通常可由用户配置。哈希初始化设置以 `ngx_hash_init_t` 类型存储，哈希本身为 `ngx_hash_t`：
 ```c
 ngx_hash_t       foo_hash;
 ngx_hash_init_t  hash;
@@ -2878,7 +2878,7 @@ ngx_utf8_length(u_char *p, size_t n)
  * Copyright (C) Organization, Inc.
  */
 ```
-如果文件被显著修改，则应更新作者离了表，将新作者添加到顶部。
+如果文件被显著修改，则应更新作者列表，将新作者添加到顶部。
 
 `ngx_config.h` 或 `ngx_core.h` 文件总是首先包含，然后是 `ngx_http.h`，`ngx_stream_h` 或 `ngx_mail.h` 中的一个。然后执行可选的外部头文件：
 ```c
@@ -2906,18 +2906,19 @@ ngx_utf8_length(u_char *p, size_t n)
 ## 注释
 
 - 不使用 "//" 注释
-- 文本是用英语写的，美国拼写是首选
+- 文本用英语书写，美式拼写优先
 - 多行注释的格式如下：
 ```c
 /*
  * The red-black tree code is based on the algorithm described in
  * the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
  */
+
 /* find the server configuration for the address:port */
 ```
 
 ## 预处理器
-宏名称从 `ngx_` 或 `NGX_` （或更具体的）前缀开始。常量的宏名是大写的。参数化宏和初始值设定项的宏是小写的。宏名称和值至少由两个空格分隔：
+宏名称从 `ngx_` 或 `NGX_` （或更具体的）前缀开头。常量的宏名是大写的。参数化宏和初始值设定项的宏是小写的。宏名称和其值至少由两个空格分隔：
 ```c
 #define NGX_CONF_BUFFER  4096
 
@@ -3016,7 +3017,7 @@ typedef enum {
 ```
 
 ## 变量
-声明变量时先按照基类型的长度排序，然后按字母顺序排序。类型名和变量名对齐。类型和名称“列”用两个空格分隔。大数组放在声明块的末尾：
+声明变量时先按照基类型的长度排序，然后按字母顺序排序。类型名和变量名对齐。类型和名称“columns”用两个空格分隔。大数组放在声明块的末尾：
 ```c
 u_char                      |  | *rv, *p;
 ngx_conf_t                  |  | *cf;
@@ -3063,7 +3064,7 @@ static char *ngx_http_merge_servers(ngx_conf_t *cf,
     ngx_http_core_main_conf_t *cmcf, ngx_http_module_t *module,
     ngx_uint_t ctx_index);
 ```
-定义中的函数名以新行开始。函数体的左大括号位于不同的行上。函数体是缩进的。函数之间有两个空行：
+定义中的函数名以新行开头。函数体的左大括号和右大括号位于不同的行上。函数体缩进。函数之间有两个空行：
 ```c
 static ngx_int_t
 ngx_http_find_virtual_server(ngx_http_request_t *r, u_char *host, size_t len)
@@ -3079,7 +3080,7 @@ ngx_http_add_addresses(ngx_conf_t *cf, ngx_http_core_srv_conf_t *cscf,
     ...
 }
 ```
-函数名和左括号后面没有空格。长函数调用被包装，使得延续行从第一个函数参数的位置开始。如果不可能，请设置第一个延续行的格式，使其在位置 79 结束：
+函数名和左括号后面没有空格。对长函数调用进行包装，使得延续行从第一个函数参数的位置开始。如果不可能，请设置第一个延续行的格式，使其在位置 79 结束：
 ```c
 ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                "http header: \"%V: %V\"",
@@ -3106,7 +3107,7 @@ r->exten.data = &r->uri.data[i + 1];
 ```c
 len = ngx_sock_ntop((struct sockaddr *) sin6, p, len, 1);
 ```
-如果表达式不能放进一行，则将其换行。首选的换行点是二元运算符。继续行与表达式的开始对齐：
+如果表达式不适合单行，则将其换行。换行的首选点是二元运算符。延续行与表达式的开头对齐：
 ```c
 if (status == NGX_HTTP_MOVED_PERMANENTLY
     || status == NGX_HTTP_MOVED_TEMPORARILY
@@ -3120,7 +3121,7 @@ if (status == NGX_HTTP_MOVED_PERMANENTLY
 p->temp_file->warn = "an upstream response is buffered "
                      "to a temporary file";
 ```
-作为最后的手段，可以包装表达式，以便继续行在位置 79 结束：
+作为最后的手段，可以包装表达式，以便延续行在位置 79 结束：
 ```c
 hinit->hash = ngx_pcalloc(hinit->pool, sizeof(ngx_hash_wildcard_t)
                                      + size * sizeof(ngx_hash_elt_t *));
@@ -3134,12 +3135,12 @@ if (((u->conf->cache_use_stale & NGX_HTTP_UPSTREAM_FT_UPDATING)
     ...
 }
 ```
-有时，在强制转换后包装表达式比较方便。在这种情况下，继续行缩进：
+有时，将表达式封装在强制转换之后是很方便的。在这种情况下，延续行缩进：
 ```c
 node = (ngx_rbtree_node_t *)
            ((u_char *) lr - offsetof(ngx_rbtree_node_t, color));
 ```
-指针被显式地与 NULL（而不是 0）进行比较：
+指针显式地与 NULL（而不是 0）进行比较：
 ```c
 if (ptr != NULL) {
     ...
@@ -3147,7 +3148,7 @@ if (ptr != NULL) {
 ```
 
 ## 条件句和循环
-"if" 关键字与条件之间用一个空格分隔。大括号位于同一行上，或者如果条件占用太多航，则位于专用行上。闭合大括号位于专用线上，可选后跟 "else if /else "。通常，在 "else if / else " 部分之前有一个空行：
+"if" 关键字与条件之间用一个空格分隔。大括号位于同一行上，或者如果条件占用太多行，则位于专用行上。闭合大括号位于一条专用线上，可选择后跟 "else if /else "。通常，在 "else if / else " 部分之前有一个空行：
 ```c
 if (node->left == sentinel) {
     temp = node->right;
@@ -3211,17 +3212,17 @@ for (q = ngx_queue_head(locations);
     ...
 }
 ```
-如果 "for" 语句的某个部分被省略，这由 " /* void */ " 注释指示：
+如果 "for" 语句的某个部分被省略，由 "/* void */" 注释指示：
 ```c
 for (i = 0; /* void */ ; i++) {
     ...
 }
 ```
-一个空体的循环也可以用 " /* void */ " 注释来表示，它可以放在同一行上：
+一个空体的循环也可以用 "/* void */" 注释来表示，它可以放在同一行上：
 ```c
 for (cl = *busy; cl->next; cl = cl->next) { /* void */ }
 ```
-一个无线循环看起来像这样：
+一个无限循环看起来像这样：
 ```c
 for ( ;; ) {
     ...
@@ -3275,10 +3276,10 @@ auto/configure --with-cc-opt='-fsanitize=address -DNGX_DEBUG_PALLOC=1'
 - 是否可以使用内置脚本语言（如 [Perl](https://nginx.org/en/docs/http/ngx_http_perl_module.html) 或 [njs](https://nginx.org/en/docs/njs/index.html)）解决问题？
 
 ## C 字符串
-nginx 中最常用的字符串类型，[ngx_str_t](https://nginx.org/en/docs/dev/development_guide.html#string_overview) 不是 C 风格的零终止字符串。您不能将数据传递给标准 C 库函数，如 `strlen()` 或 `strstr()`。相反，应该使用接受 `ngx_str_t` 或指向数据和长度的指针的 nginx [对应项](https://nginx.org/en/docs/dev/development_guide.html#string_overview)。然而，当 `ngx_str_t` 持有一个指向以零结尾的字符串的指针时，由一种情况：作为配置文件解析结果的字符串以零结尾。
+nginx 中最常用的字符串类型，[ngx_str_t](https://nginx.org/en/docs/dev/development_guide.html#string_overview) 不是 C 风格的以零结尾的字符串。不能将数据传递给标准 C 库函数，如 `strlen()` 或 `strstr()`。相反，应该使用接受 `ngx_str_t` 的 nginx [对应项](https://nginx.org/en/docs/dev/development_guide.html#string_overview)，或者使用指向数据的指针和长度。然而，有一种情况 `ngx_str_t` 持有指向以零结尾的字符串的指针：作为配置文件解析结果的字符串以零结尾。
 
 ## 全局变量
-避免在模块中使用全局变量。最有可能的是，这是一个错误，有一个全局变量。任何全局变量都应该绑定到一个[配置周期](https://nginx.org/en/docs/dev/development_guide.html#cycle)，并从响应的[内存池](https://nginx.org/en/docs/dev/development_guide.html#pool)中分配。这允许 nginx 执行优雅的配置重新加载。尝试使用全局变量可能会破坏此功能，因为不可能同时拥有两个配置并拜托它们。有时需要全局变量。在这种情况下，需要特别注意正确地管理重新配置。另外，检查代码使用的库是否具有可能在重新加载时被破坏的隐式全局状态。
+避免在模块中使用全局变量。这很可能是一个全局变量的错误。任何全局数据都应该绑定到一个[配置周期](https://nginx.org/en/docs/dev/development_guide.html#cycle)，并从相应的[内存池](https://nginx.org/en/docs/dev/development_guide.html#pool)中分配。这允许 nginx 执行优雅的配置重载。尝试使用全局变量可能会破坏此功能，因为不可能同时拥有两个配置并将其删除。有时需要全局变量。在这种情况下，需要特别注意正确地管理重新配置。另外，检查代码使用的库是否具有在重新加载时可能被破坏的隐式全局状态。
 
 ## 手动管理内存
 学习如何使用 nginx [池](https://nginx.org/en/docs/dev/development_guide.html#pool)而不是处理容易出错的 malloc/free 方法。创建池并将其绑定到对象 - [配置](https://nginx.org/en/docs/dev/development_guide.html#http_conf)、[周期](https://nginx.org/en/docs/dev/development_guide.html#cycle)、[连接](https://nginx.org/en/docs/dev/development_guide.html#connection)或 [HTTP 请求](https://nginx.org/en/docs/dev/development_guide.html#http_request)。当对象被销毁时，关联的池也被销毁。因此，当使用对象时，可以从相应的池中分配所需的量，即使在错误的情况下也不关心内存释放。
@@ -3287,7 +3288,7 @@ nginx 中最常用的字符串类型，[ngx_str_t](https://nginx.org/en/docs/dev
 建议避免在 nginx 中使用线程，因为它肯定会破坏东西：大多数 nginx 函数不是线程安全的。预期线程将仅执行系统调用和线程安全库函数。如果你需要运行一些与客户端请求处理无关的代码，正确的方法是在 `init_process` 模块处理程序中调度一个计时器，并在计时器处理程序中执行所需的操作。在内部，nginx 使用[线程](https://nginx.org/en/docs/dev/development_guide.html#threads)来增强与 IO 相关的操作，但这是一个有很多限制的特殊情况。
 
 ## 阻塞库
-一个常见的错误是使用内部阻塞的库。大多数库本质上都是同步和阻塞的。换句话说，它们一次执行一个操作，并浪费时间等待其他对等体的响应。因此，当使用这样的库处理请求时，整个 nginx worker 被阻塞，从而破坏性能。只使用提供异步接口的库，不要阻塞整个进程。
+一个常见的错误是使用内部阻塞的库。大多数库本质上都是同步和阻塞的。换句话说，它们一次执行一个操作，并浪费时间等待其他对等方的响应。因此，当使用这样的库处理请求时，nginx 的 worker 进程会被阻塞，从而破坏性能。只使用提供异步接口的库，不要阻塞整个进程。
 
 ## 对外部服务的 HTTP 请求
 通常，模块需要对某些外部服务执行 HTTP 调用。一个常见的错误是使用一些外部库（如 libcurl）来执行 HTTP 请求。绝对没有必要带着巨大的外部（可能是阻塞！）代码去完成可以由 nginx 自己完成的任务。
