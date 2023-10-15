@@ -1704,12 +1704,12 @@ typedef struct {
 ```
 其中：
 
-- len - 值的长度
-- data - 值本身
-- valid - 值有效
-- not_found - 未找到变量，因此 `data` 和 `len` 字段不相关；例如，当请求中没有传递相应的参数时，类似 `$arg_foo` 的变量可能会发生这种情况
-- no_cacheable - 不缓存结果
-- escape - 由日志模块内部使用，用于标记输出时需要转义的值
+- `len` - 值的长度
+- `data` - 值本身
+- `valid` - 值有效
+- `not_found` - 未找到变量，因此 `data` 和 `len` 字段不相关；例如，当请求中没有传递相应的参数时，类似 `$arg_foo` 的变量可能会发生这种情况
+- `no_cacheable` - 不缓存结果
+- `escape` - 由日志模块内部使用，用于标记输出时需要转义的值
 
 `ngx_http_get_flushed_variable()` 和 `ngx_http_get_indexed_variable()` 函数用于获取变量的值。它们具有相同的接口 - 接受 HTTP 请求 `r` 作为评估变量的上下文，以及标识变量的 `index`。典型用法示例：
 ```c
@@ -1726,13 +1726,14 @@ if (v == NULL || v->not_found) {
 ```
 它们之间的区别在于，`ngx_http_get_indexed_variable()` 返回缓存值，`ngx_http_get_flushed_variable()` 刷新该高速缓存中不可缓存的变量。
 
-有些模块，如 SSI 和 Perl，需要处理在配置时名称未知的变量。因此，索引不能用于访问它们，但 `ngx_http_get_variable(r, name, key)` 函数可用。它搜索一个具有给定 `name` 的变量，其哈希 `key` 从该名称派生。
+有些模块，如 **SSI** 和 **Perl**，需要处理在配置时名称未知的变量。因此，索引不能用于访问它们，但 `ngx_http_get_variable(r, name, key)` 函数可用。它搜索一个具有给定 `name` 的变量，其哈希 `key` 从该名称派生。
 
 ## 创建变量
 要创建变量，请使用 `ngx_http_add_variable()` 函数。它接受配置（变量注册的位置），变量名和控制函数行为的标志作为参数：
 
 - **NGX_HTTP_VAR_CHANGEABLE** - 启用变量的重定义：如果另一个模块定义具有相同名称的变量，则不存在冲突。这允许 [set](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#set) 指令覆盖变量。
-- **NGX_HTTP_VAR_NOHASH** - 表示此变量只能通过索引访问，不能通过名称访问。当已知 SSI 或 Perl 等模块中不需要变量时，这是一个小的优化。
+- **NGX_HTTP_VAR_NOCACHEABLE** - 禁用缓存，这对变量（如 `$time_local`）很有用。
+- **NGX_HTTP_VAR_NOHASH** - 表示此变量只能通过索引访问，不能通过名称访问。当已知 **SSI** 或 **Perl** 等模块中不需要变量时，这是一个小的优化。
 - **NGX_HTTP_VAR_PREFIX** - 变量名是前缀。在这种情况下，处理程序必须实现额外的逻辑来获取特定变量的值。例如，所有 "arg_" 变量都由同一个处理程序处理，该处理程序在请求参数中执行查找并返回特定参数的值。
 
 如果出现错误，函数返回 NULL，否则返回指向 `ngx_http_variable_t` 的指针：
@@ -1861,12 +1862,12 @@ if (ngx_http_compile_complex_value(&ccv) != NGX_OK) {
 ```
 这里，`ccv` 保存初始化复杂值 `cv` 所需的所有参数：
 
-- cf - 配置指针
-- value - 待解析字符串（输入）
-- complex_value - 编译值（输出）
-- zero - 启用零终止值的标志
-- conf_prefix - 在结果中添加配置前缀（nginx 当前查找配置的目录）
-- root_prefix - 在结果中添加 root 前缀（普通 nginx 安装前缀）
+- `cf` - 配置指针
+- `value` - 待解析字符串（输入）
+- `complex_value` - 编译值（输出）
+- `zero` - 启用零终止值的标志
+- `conf_prefix` - 在结果中添加配置前缀（nginx 当前查找配置的目录）
+- `root_prefix` - 在结果中添加 root 前缀（普通 nginx 安装前缀）
 
 当结果要传递给需要以零结尾字符串的库时，`zero` 标志很有用，而前缀在处理文件名时也很方便。
 
